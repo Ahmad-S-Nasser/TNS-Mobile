@@ -1,0 +1,29 @@
+class AppRoutes {
+  static const String splash = '/';
+  static const String onboarding = '/onboarding';
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String forgotPassword = '/forgot-password';
+  static const String layout = '/layout';
+  static const String home = '/home';
+  static const String profile = '/profile';
+  static const String addChild = '/add-child';
+  static const String children = '/children';
+  static const String growthFields = '/growth-fields';
+  static const String measurement = '/growth-fields/measure';
+  static const String measurementHistory = '/growth-fields/history';
+  static const String booking = '/booking';
+  static const String behavioralProblems = '/behavioral-problems';
+  static const String hospitals = '/hospitals';
+  static const String healthUnits = '/health-units';
+  static const String emergency = '/emergency';
+  static const String settingsScreen = '/settings';
+  static const String teachingGames = '/teaching-games';
+  static const String content = '/content';
+  static const String community = '/community';
+  static const String askQuestion = '/community/ask';
+  static const String questionDetail = '/community/question';
+  static const String adminQuestions = '/admin/questions';
+  static const String gameDetail = '/teaching-games/detail';
+  static const String pdfPreview = '/teaching-games/pdf';
+}
