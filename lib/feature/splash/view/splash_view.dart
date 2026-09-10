@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tips_n_steps/core/auth/auth_cubit.dart';
 import 'package:tips_n_steps/core/helpers/extension.dart';
 import 'package:tips_n_steps/core/routing/app_routes.dart';
 import 'package:tips_n_steps/core/theme/app_colors.dart';
@@ -71,11 +73,26 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
 
     _entryController.forward();
 
-    Future.delayed(const Duration(milliseconds: 4000), () {
-      if (mounted) {
-        context.pushReplacementNamed(AppRoutes.onboarding);
-      }
-    });
+    Future.delayed(const Duration(milliseconds: 4000), _navigateNext);
+  }
+
+  Future<void> _navigateNext() async {
+    if (!mounted) return;
+    final authCubit = context.read<AuthCubit>();
+    var authState = authCubit.state;
+    if (authState.status == AuthStatus.unknown) {
+      // checkSession() is a fast local-storage read triggered at app start;
+      // in the rare case it hasn't resolved by the time the splash
+      // animation finishes, wait for it (capped, so a slow device never
+      // hangs on the splash screen).
+      authState = await authCubit.stream
+          .firstWhere((s) => s.status != AuthStatus.unknown)
+          .timeout(const Duration(seconds: 3), onTimeout: () => authState);
+    }
+    if (!mounted) return;
+    context.pushReplacementNamed(
+      authState.isAuthenticated ? AppRoutes.home : AppRoutes.onboarding,
+    );
   }
 
   @override

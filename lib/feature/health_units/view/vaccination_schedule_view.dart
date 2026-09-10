@@ -2,15 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:tips_n_steps/core/helpers/extension.dart';
 import 'package:tips_n_steps/core/theme/app_colors.dart';
 import 'package:tips_n_steps/feature/health_units/data/model/health_unit_model.dart';
+import 'package:tips_n_steps/feature/health_units/logic/health_units_cubit.dart';
 
+/// Simplified: rendered as a flat, age-sorted list of real `section=Vaccines`
+/// content items (title + body) instead of a hand-authored nested
+/// age->vaccines table the backend has no endpoint for.
 class VaccinationScheduleView extends StatelessWidget {
+  final HealthUnitsStatus status;
   final List<VaccinationItem> schedule;
+  final String? errorMessage;
   final VoidCallback onBack;
 
   const VaccinationScheduleView({
     super.key,
+    required this.status,
     required this.schedule,
     required this.onBack,
+    this.errorMessage,
   });
 
   @override
@@ -47,62 +55,76 @@ class VaccinationScheduleView extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.all(20.W),
-              itemCount: schedule.length,
-              itemBuilder: (context, index) {
-                final item = schedule[index];
-                return Container(
-                  margin: EdgeInsets.only(bottom: 16.H),
-                  padding: EdgeInsets.all(16.W),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20.R),
-                    border: Border.all(color: AppColors.gray200),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.purple,
-                            child: Text(
-                              '${index + 1}',
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          12.hS,
-                          Text(
-                            item.age,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.SP,
-                            ),
-                          ),
-                        ],
-                      ),
-                      12.vS,
-                      ...item.vaccines.map((v) => Padding(
-                            padding: EdgeInsets.only(bottom: 4.H),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.vaccines,
-                                    size: 14, color: Colors.purple),
-                                8.hS,
-                                Text(v),
-                              ],
-                            ),
-                          )),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
+          Expanded(child: _buildBody()),
         ],
       ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (status == HealthUnitsStatus.loading || status == HealthUnitsStatus.initial) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (status == HealthUnitsStatus.error) {
+      return Center(child: Text(errorMessage ?? 'تعذر تحميل جدول التطعيمات'));
+    }
+    if (schedule.isEmpty) {
+      return const Center(child: Text('لا يتوفر جدول تطعيمات حالياً'));
+    }
+    return ListView.builder(
+      padding: EdgeInsets.all(20.W),
+      itemCount: schedule.length,
+      itemBuilder: (context, index) {
+        final item = schedule[index];
+        return Container(
+          margin: EdgeInsets.only(bottom: 16.H),
+          padding: EdgeInsets.all(16.W),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.R),
+            border: Border.all(color: AppColors.gray200),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.purple,
+                    child: Icon(Icons.vaccines, color: Colors.white, size: 16.W),
+                  ),
+                  12.hS,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.ageLabel,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.SP,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Text(
+                          item.title,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15.SP),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (item.body.isNotEmpty) ...[
+                8.vS,
+                Text(item.body,
+                    style: TextStyle(fontSize: 12.SP, color: AppColors.gray600)),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

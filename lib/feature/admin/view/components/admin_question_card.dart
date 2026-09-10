@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:tips_n_steps/core/helpers/extension.dart';
 import 'package:tips_n_steps/core/theme/app_colors.dart';
+import 'package:tips_n_steps/feature/community/data/model/question_model.dart';
 
 class AdminQuestionCard extends StatelessWidget {
-  final String author;
-  final String text;
-  final String time;
-  final bool isAnswered;
+  final QuestionModel question;
   final VoidCallback? onReply;
 
   const AdminQuestionCard({
     super.key,
-    required this.author,
-    required this.text,
-    required this.time,
-    this.isAnswered = false,
+    required this.question,
     this.onReply,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isAnswered = question.isAnswered;
+
     return Container(
       margin: EdgeInsets.only(bottom: 12.H),
       padding: EdgeInsets.all(16.W),
@@ -34,18 +31,25 @@ class AdminQuestionCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                author,
+                question.displayAuthor,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.SP),
               ),
               const Spacer(),
               Text(
-                time,
+                question.displayDate,
                 style: TextStyle(color: AppColors.gray500, fontSize: 10.SP),
               ),
             ],
           ),
           4.vS,
-          Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(question.text, style: const TextStyle(fontWeight: FontWeight.bold)),
+          if (isAnswered && question.answer != null) ...[
+            8.vS,
+            Text(
+              question.answer!.answerText,
+              style: TextStyle(color: AppColors.gray700, fontSize: 12.SP),
+            ),
+          ],
           if (!isAnswered) ...[
             8.vS,
             Align(

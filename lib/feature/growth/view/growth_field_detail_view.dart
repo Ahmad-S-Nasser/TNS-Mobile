@@ -62,9 +62,9 @@ class GrowthFieldDetailView extends StatelessWidget {
               children: [
                 GrowthStatSection(field: field),
                 24.vS,
-                GrowthMetricsSection(metrics: field.metrics),
+                GrowthMetricsSection(skills: field.skills ?? const []),
                 24.vS,
-                GrowthMilestonesSection(milestones: field.milestones),
+                GrowthMilestonesSection(skills: field.skills ?? const []),
                 24.vS,
                 GrowthTipsSection(field: field),
                 32.vS,
@@ -72,7 +72,7 @@ class GrowthFieldDetailView extends StatelessWidget {
                   children: [
                     Expanded(
                         child: AppButton(
-                            text: 'تسجيل قياس',
+                            text: 'تسجيل تقييم',
                             onPressed: () =>
                                 context.pushNamed('/growth-fields/measure'))),
                     12.hS,
@@ -86,8 +86,14 @@ class GrowthFieldDetailView extends StatelessWidget {
                 ),
                 12.vS,
                 AppButton(
-                    text: 'حجز استشارة مع طبيب',
-                    onPressed: () => context.pushNamed('/booking')),
+                  text: 'حجز استشارة مع طبيب (قريباً)',
+                  gradient: LinearGradient(
+                      colors: [Colors.grey.shade400, Colors.grey.shade500]),
+                  onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('ميزة حجز الاستشارات قيد التطوير')),
+                  ),
+                ),
                 40.vS,
               ],
             ),

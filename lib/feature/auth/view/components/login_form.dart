@@ -6,11 +6,13 @@ import 'package:tips_n_steps/core/widgets/app_button.dart';
 import 'package:tips_n_steps/core/widgets/app_input.dart';
 
 class LoginForm extends StatefulWidget {
-  final VoidCallback onLogin;
+  final void Function(String email, String password) onLogin;
+  final bool isLoading;
 
   const LoginForm({
     super.key,
     required this.onLogin,
+    this.isLoading = false,
   });
 
   @override
@@ -66,7 +68,11 @@ class _LoginFormState extends State<LoginForm> {
         24.vS,
         AppButton(
           text: 'تسجيل الدخول',
-          onPressed: widget.onLogin,
+          isLoading: widget.isLoading,
+          onPressed: () => widget.onLogin(
+            _emailController.text.trim(),
+            _passwordController.text,
+          ),
         ),
       ],
     );

@@ -3,6 +3,11 @@ import 'package:tips_n_steps/core/helpers/extension.dart';
 import 'package:tips_n_steps/core/theme/app_colors.dart';
 import 'package:tips_n_steps/feature/growth/data/model/growth_field_model.dart';
 
+/// Overview of a growth field's real content (skill/milestone counts).
+/// The old prototype showed a fake "current status / target / progress %"
+/// block — the backend has no such computed value without a specific
+/// child's assessment history, so this is descoped to what the field
+/// catalog actually provides.
 class GrowthStatSection extends StatelessWidget {
   final GrowthFieldModel field;
 
@@ -23,9 +28,9 @@ class GrowthStatSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            const Icon(Icons.trending_up, color: Colors.green),
+            const Icon(Icons.insights, color: Colors.green),
             8.hS,
-            Text('نظرة عامة على التقدم',
+            Text('نظرة عامة',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.SP))
           ]),
           20.vS,
@@ -42,10 +47,10 @@ class GrowthStatSection extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('الحالة الحالية',
+                      Text('عدد المهارات',
                           style: TextStyle(
                               color: AppColors.gray600, fontSize: 12.SP)),
-                      Text(field.stats['current'],
+                      Text('${field.skillCount}',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20.SP)),
                     ],
@@ -64,10 +69,10 @@ class GrowthStatSection extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('الهدف القادم',
+                      Text('المعالم التطورية',
                           style: TextStyle(
                               color: AppColors.gray600, fontSize: 12.SP)),
-                      Text(field.stats['target'],
+                      Text('${field.milestoneCount}',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20.SP)),
                     ],
@@ -77,32 +82,9 @@ class GrowthStatSection extends StatelessWidget {
             ],
           ),
           16.vS,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('التقدم',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: AppColors.gray800)),
-              Text('${field.stats['progress']}%',
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-            ],
-          ),
-          8.vS,
-          Container(
-            height: 10.H,
-            width: double.infinity,
-            decoration: BoxDecoration(
-                color: AppColors.gray200,
-                borderRadius: BorderRadius.circular(5.R)),
-            child: FractionallySizedBox(
-              alignment: Alignment.centerRight,
-              widthFactor: field.stats['progress'] / 100,
-              child: Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [field.colorStart, field.colorEnd]),
-                      borderRadius: BorderRadius.circular(5.R))),
-            ),
+          Text(
+            field.description,
+            style: TextStyle(color: AppColors.gray700, fontSize: 13.SP, height: 1.4),
           ),
         ],
       ),

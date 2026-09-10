@@ -4,11 +4,21 @@ import 'package:tips_n_steps/core/widgets/app_button.dart';
 import 'package:tips_n_steps/core/widgets/app_input.dart';
 
 class RegisterForm extends StatefulWidget {
-  final VoidCallback onRegister;
+  /// Backend register body only accepts email/password/firstName/lastName
+  /// (no phone at registration time — phone is set later via profile
+  /// update), so the phone field here is currently decorative/local-only.
+  final void Function({
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String password,
+  }) onRegister;
+  final bool isLoading;
 
   const RegisterForm({
     super.key,
     required this.onRegister,
+    this.isLoading = false,
   });
 
   @override
@@ -17,7 +27,8 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   bool _showPassword = false;
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -26,12 +37,43 @@ class _RegisterFormState extends State<RegisterForm> {
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  void _handleSubmit() {
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (firstName.isEmpty ||
+        lastName.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('يرجى تعبئة جميع الحقول المطلوبة')),
+      );
+      return;
+    }
+    if (password != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('كلمتا المرور غير متطابقتين')),
+      );
+      return;
+    }
+
+    widget.onRegister(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+    );
   }
 
   @override
@@ -40,9 +82,15 @@ class _RegisterFormState extends State<RegisterForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppInput(
-          label: 'الاسم الكامل',
-          hint: 'أدخل اسمك الكامل',
-          controller: _nameController,
+          label: 'الاسم الأول',
+          hint: 'أدخل اسمك الأول',
+          controller: _firstNameController,
+        ),
+        16.vS,
+        AppInput(
+          label: 'اسم العائلة',
+          hint: 'أدخل اسم العائلة',
+          controller: _lastNameController,
         ),
         16.vS,
         AppInput(
@@ -79,7 +127,8 @@ class _RegisterFormState extends State<RegisterForm> {
         32.vS,
         AppButton(
           text: 'إنشاء الحساب',
-          onPressed: widget.onRegister,
+          isLoading: widget.isLoading,
+          onPressed: _handleSubmit,
         ),
       ],
     );

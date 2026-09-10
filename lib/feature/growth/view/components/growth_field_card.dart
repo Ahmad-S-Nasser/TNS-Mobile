@@ -45,9 +45,7 @@ class GrowthFieldCard extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: field.bgColor,
                         borderRadius: BorderRadius.circular(15.R)),
-                    child: Center(
-                        child: Text(field.illustration.substring(0, 2),
-                            style: TextStyle(fontSize: 24.SP))),
+                    child: const Center(child: Icon(Icons.child_care)),
                   ),
                   16.hS,
                   Expanded(
@@ -84,11 +82,11 @@ class GrowthFieldCard extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('الحالي',
+                              Text('عدد المهارات',
                                   style: TextStyle(
                                       color: AppColors.gray500,
                                       fontSize: 10.SP)),
-                              Text(field.stats['current'],
+                              Text('${field.skillCount}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16.SP)),
@@ -106,11 +104,11 @@ class GrowthFieldCard extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('الهدف',
+                              Text('المعالم التطورية',
                                   style: TextStyle(
                                       color: AppColors.gray500,
                                       fontSize: 10.SP)),
-                              Text(field.stats['target'],
+                              Text('${field.milestoneCount}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16.SP)),
@@ -119,37 +117,6 @@ class GrowthFieldCard extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                  16.vS,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('التقدم',
-                          style: TextStyle(
-                              color: AppColors.gray600,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12.SP)),
-                      Text('${field.stats['progress']}%',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 12.SP)),
-                    ],
-                  ),
-                  8.vS,
-                  Container(
-                    height: 8.H,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: AppColors.gray200,
-                        borderRadius: BorderRadius.circular(4.R)),
-                    child: FractionallySizedBox(
-                      alignment: Alignment.centerRight,
-                      widthFactor: field.stats['progress'] / 100,
-                      child: Container(
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  colors: [field.colorStart, field.colorEnd]),
-                              borderRadius: BorderRadius.circular(4.R))),
-                    ),
                   ),
                   16.vS,
                   Row(

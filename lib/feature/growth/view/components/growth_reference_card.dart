@@ -20,7 +20,7 @@ class GrowthReferenceCard extends StatelessWidget {
           12.hS,
           Expanded(
             child: Text(
-              'طفل 12-18 شهر: وزن 9-13 كجم · طول 71-82 سم · محيط رأس 44-48 سم',
+              'أجيبي بصدق عن كل مهارة بناءً على قدرات طفلك الحالية — النتيجة تساعدك على متابعة تطوره بدقة',
               style: TextStyle(fontSize: 13.SP, color: AppColors.primaryBlue),
             ),
           ),

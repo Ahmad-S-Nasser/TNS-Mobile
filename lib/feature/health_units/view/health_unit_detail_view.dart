@@ -3,6 +3,9 @@ import 'package:tips_n_steps/core/helpers/extension.dart';
 import 'package:tips_n_steps/core/theme/app_colors.dart';
 import 'package:tips_n_steps/feature/health_units/data/model/health_unit_model.dart';
 
+/// Simplified: no `address`/`phone`/`hours`/`vaccinations`/`facilities` exist
+/// on the backend content item — this view now only renders the real
+/// `title`/`body`/`tags`-derived data.
 class HealthUnitDetailView extends StatelessWidget {
   final HealthUnitModel unit;
   final VoidCallback onBack;
@@ -53,34 +56,34 @@ class HealthUnitDetailView extends StatelessWidget {
             child: ListView(
               padding: EdgeInsets.all(20.W),
               children: [
+                if (unit.thumbnailUrl != null && unit.thumbnailUrl!.isNotEmpty) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20.R),
+                    child: Image.network(unit.thumbnailUrl!,
+                        height: 160.H, width: double.infinity, fit: BoxFit.cover),
+                  ),
+                  20.vS,
+                ],
                 Text(
-                  unit.description,
+                  unit.description.isNotEmpty
+                      ? unit.description
+                      : 'لا يوجد وصف متاح لهذه الوحدة حالياً.',
                   style: TextStyle(
                       color: AppColors.gray700, fontSize: 14.SP, height: 1.5),
                 ),
-                24.vS,
-                _buildSectionTitle(Icons.map, 'معلومات التواصل'),
-                _buildInfoItem('العنوان', unit.address),
-                _buildInfoItem('الهاتف', unit.phone),
-                _buildInfoItem('مواعيد العمل', '${unit.hours} (${unit.days})'),
-                24.vS,
-                _buildSectionTitle(Icons.check_circle, 'الخدمات المتوفرة'),
-                Wrap(
-                  spacing: 8.W,
-                  children: unit.services
-                      .map((s) => Chip(
-                            label: Text(s, style: TextStyle(fontSize: 12.SP)),
-                            backgroundColor: Colors.cyan.shade50,
-                          ))
-                      .toList(),
-                ),
-                24.vS,
-                _buildSectionTitle(Icons.medical_services, 'التطعميات المتاحة'),
-                ...unit.vaccinations.map((v) => ListTile(
-                      leading:
-                          Icon(Icons.check, color: Colors.green, size: 24.W),
-                      title: Text(v, style: TextStyle(fontSize: 14.SP)),
-                    )),
+                if (unit.services.isNotEmpty) ...[
+                  24.vS,
+                  _buildSectionTitle(Icons.check_circle, 'الخدمات المتوفرة'),
+                  Wrap(
+                    spacing: 8.W,
+                    children: unit.services
+                        .map((s) => Chip(
+                              label: Text(s, style: TextStyle(fontSize: 12.SP)),
+                              backgroundColor: Colors.cyan.shade50,
+                            ))
+                        .toList(),
+                  ),
+                ],
               ],
             ),
           ),
@@ -99,25 +102,6 @@ class HealthUnitDetailView extends StatelessWidget {
           Text(
             title,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.SP),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoItem(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.H),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(color: AppColors.gray500, fontSize: 12.SP),
-          ),
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
       ),

@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:tips_n_steps/core/helpers/extension.dart';
 import 'package:tips_n_steps/core/theme/app_colors.dart';
+import 'package:tips_n_steps/feature/growth/data/model/assessment_model.dart';
 
 class MeasurementHistoryCard extends StatelessWidget {
-  final Map<String, String> measurement;
+  final AssessmentHistoryEntry entry;
   final bool isLatest;
 
   const MeasurementHistoryCard({
     super.key,
-    required this.measurement,
+    required this.entry,
     this.isLatest = false,
   });
+
+  String get _formattedDate {
+    final date = entry.completedAt;
+    if (date == null) return '—';
+    return '${date.year}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +46,7 @@ class MeasurementHistoryCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  measurement['date']!,
+                  _formattedDate,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color:
@@ -68,52 +75,37 @@ class MeasurementHistoryCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildHistoryMetric('الوزن', measurement['weight']!, 'كجم',
-                    measurement['trend']!),
-                _buildHistoryMetric(
-                    'الطول', measurement['height']!, 'سم', 'up'),
-                _buildHistoryMetric(
-                    'م. الرأس', measurement['head']!, 'سم', 'same'),
+                Column(
+                  children: [
+                    Icon(Icons.emoji_events, color: Colors.amber.shade700, size: 22.W),
+                    4.vS,
+                    Text('${entry.totalScore.toStringAsFixed(0)}%',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.SP,
+                            color: AppColors.gray800)),
+                    Text('النتيجة الإجمالية',
+                        style: TextStyle(fontSize: 12.SP, color: AppColors.gray500)),
+                  ],
+                ),
+                Column(
+                  children: [
+                    const Icon(Icons.stars, color: AppColors.primaryBlue),
+                    4.vS,
+                    Text(entry.scoreLevel,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.SP,
+                            color: AppColors.gray800)),
+                    Text('المستوى',
+                        style: TextStyle(fontSize: 12.SP, color: AppColors.gray500)),
+                  ],
+                ),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildHistoryMetric(
-      String label, String value, String unit, String trend) {
-    return Column(
-      children: [
-        Icon(
-            trend == 'up'
-                ? Icons.trending_up
-                : trend == 'down'
-                    ? Icons.trending_down
-                    : Icons.remove,
-            color: trend == 'up'
-                ? Colors.green
-                : trend == 'down'
-                    ? Colors.red
-                    : Colors.grey,
-            size: 20.W),
-        4.vS,
-        RichText(
-            text: TextSpan(children: [
-          TextSpan(
-              text: value,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.SP,
-                  color: AppColors.gray800)),
-          TextSpan(
-              text: ' $unit',
-              style: TextStyle(fontSize: 12.SP, color: AppColors.gray500))
-        ])),
-        Text(label,
-            style: TextStyle(fontSize: 12.SP, color: AppColors.gray500)),
-      ],
     );
   }
 }

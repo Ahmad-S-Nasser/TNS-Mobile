@@ -60,19 +60,18 @@ class ContentCard extends StatelessWidget {
                         padding: EdgeInsets.symmetric(
                             horizontal: 10.W, vertical: 4.H),
                         decoration: BoxDecoration(
-                          color: item.type == 'video'
+                          color: item.isVideo
                               ? Colors.red.withValues(alpha: 0.1)
                               : const Color(0xFF1B59B2).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10.R),
                         ),
                         child: Text(
-                          item.type == 'video' ? 'فيديو' : 'مقالة',
+                          item.isVideo ? 'فيديو' : 'مقالة',
                           style: TextStyle(
                             fontSize: 10.SP,
                             fontWeight: FontWeight.bold,
-                            color: item.type == 'video'
-                                ? Colors.red
-                                : const Color(0xFF1B59B2),
+                            color:
+                                item.isVideo ? Colors.red : const Color(0xFF1B59B2),
                           ),
                         ),
                       ),
@@ -89,18 +88,16 @@ class ContentCard extends StatelessWidget {
                   4.vS,
                   Row(
                     children: [
-                      Icon(
-                          item.type == 'video' ? Icons.play_circle : Icons.book,
-                          size: 14.W,
-                          color: AppColors.gray400),
+                      Icon(item.isVideo ? Icons.play_circle : Icons.book,
+                          size: 14.W, color: AppColors.gray400),
                       4.hS,
-                      Text(item.duration,
+                      Text('${item.formattedViewCount} مشاهدة',
                           style: TextStyle(
                               fontSize: 10.SP, color: AppColors.gray500)),
                       12.hS,
                       Icon(Icons.star, size: 14.W, color: Colors.amber),
                       4.hS,
-                      Text(item.rating.toString(),
+                      Text(item.averageRating.toStringAsFixed(1),
                           style: TextStyle(
                               fontSize: 10.SP, color: AppColors.gray500)),
                     ],

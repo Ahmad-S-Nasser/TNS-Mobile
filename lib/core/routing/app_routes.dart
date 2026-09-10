@@ -15,6 +15,8 @@ class AppRoutes {
   static const String booking = '/booking';
   static const String behavioralProblems = '/behavioral-problems';
   static const String hospitals = '/hospitals';
+  static const String hospitalDetail = '/hospitals/detail';
+  static const String notifications = '/notifications';
   static const String healthUnits = '/health-units';
   static const String emergency = '/emergency';
   static const String settingsScreen = '/settings';

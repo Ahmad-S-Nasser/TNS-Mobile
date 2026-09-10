@@ -1,67 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:tips_n_steps/core/helpers/extension.dart';
 import 'package:tips_n_steps/core/theme/app_colors.dart';
+import 'package:tips_n_steps/feature/growth/data/model/growth_field_model.dart';
 
+/// Informational milestone timeline for a field's skills. This is a
+/// browsing view (not tied to a specific child), so there is no
+/// achieved/not-achieved state here — that only exists once a child has an
+/// actual assessment on record (see the Measurement History screen).
 class GrowthMilestonesSection extends StatelessWidget {
-  final List<Map<String, dynamic>> milestones;
+  final List<GrowthSkillModel> skills;
 
   const GrowthMilestonesSection({
     super.key,
-    required this.milestones,
+    required this.skills,
   });
 
   @override
   Widget build(BuildContext context) {
+    final entries = <MapEntry<GrowthSkillModel, GrowthMilestoneModel>>[];
+    for (final skill in skills) {
+      for (final milestone in skill.milestones) {
+        entries.add(MapEntry(skill, milestone));
+      }
+    }
+    entries.sort(
+        (a, b) => a.value.expectedMonth.compareTo(b.value.expectedMonth));
+
+    if (entries.isEmpty) return const SizedBox.shrink();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('المعالم التطورية',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.SP)),
         16.vS,
-        ...milestones.map((milestone) => Container(
+        ...entries.map((entry) => Container(
               margin: EdgeInsets.only(bottom: 12.H),
               padding: EdgeInsets.all(16.W),
               decoration: BoxDecoration(
-                color: milestone['achieved']
-                    ? Colors.green.shade50
-                    : AppColors.gray50,
+                color: AppColors.gray50,
                 borderRadius: BorderRadius.circular(20.R),
-                border: Border.all(
-                    color: milestone['achieved']
-                        ? Colors.green.shade100
-                        : Colors.transparent),
               ),
               child: Row(
                 children: [
                   Container(
                     width: 40.W,
                     height: 40.H,
-                    decoration: BoxDecoration(
-                        color: milestone['achieved']
-                            ? Colors.green
-                            : AppColors.gray300,
-                        shape: BoxShape.circle),
+                    decoration: const BoxDecoration(
+                        color: AppColors.gray300, shape: BoxShape.circle),
                     child: Center(
-                        child: Icon(
-                            milestone['achieved']
-                                ? Icons.check
-                                : Icons.radio_button_unchecked,
-                            color: Colors.white,
-                            size: 20.W)),
+                        child: Icon(Icons.flag, color: Colors.white, size: 18.W)),
                   ),
                   16.hS,
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(milestone['age'],
+                        Text('عند عمر ${entry.value.expectedMonth} شهر',
                             style: TextStyle(
-                                color: milestone['achieved']
-                                    ? Colors.green
-                                    : AppColors.gray500,
+                                color: AppColors.gray500,
                                 fontSize: 12.SP,
                                 fontWeight: FontWeight.bold)),
-                        Text(milestone['title'],
+                        Text(entry.key.titleAr,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 14.SP)),
                       ],

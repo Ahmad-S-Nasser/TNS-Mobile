@@ -37,11 +37,11 @@ class QuestionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    question.author,
+                    question.displayAuthor,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    question.date,
+                    question.displayDate,
                     style: TextStyle(color: AppColors.gray500, fontSize: 12.SP),
                   ),
                 ],
@@ -54,7 +54,7 @@ class QuestionCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.R),
                 ),
                 child: Text(
-                  question.status == 'answered' ? 'مجاب' : 'قيد الانتظار',
+                  question.isAnswered ? 'مجاب' : 'قيد الانتظار',
                   style: TextStyle(
                     color: Colors.green,
                     fontSize: 12.SP,

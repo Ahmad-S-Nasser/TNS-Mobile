@@ -3,6 +3,8 @@ import 'package:tips_n_steps/core/helpers/extension.dart';
 import 'package:tips_n_steps/core/theme/app_colors.dart';
 import 'package:tips_n_steps/feature/emergency/data/model/emergency_model.dart';
 
+/// Simplified: the backend has no `severity` field per content item (only
+/// `title`/`body`), so the old severity badge was dropped rather than faked.
 class EmergencyTipCard extends StatelessWidget {
   final EmergencyTipModel tip;
   final VoidCallback onTap;
@@ -41,34 +43,10 @@ class EmergencyTipCard extends StatelessWidget {
             ),
             16.hS,
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(tip.title,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18.SP)),
-                  4.vS,
-                  Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.W, vertical: 2.H),
-                    decoration: BoxDecoration(
-                      color: tip.severity == 'حرج'
-                          ? Colors.red.shade100
-                          : Colors.orange.shade100,
-                      borderRadius: BorderRadius.circular(8.R),
-                    ),
-                    child: Text(
-                      tip.severity,
-                      style: TextStyle(
-                        color: tip.severity == 'حرج'
-                            ? Colors.red.shade700
-                            : Colors.orange.shade700,
-                        fontSize: 10.SP,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
+              child: Text(
+                tip.title,
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 18.SP),
               ),
             ),
             const Icon(Icons.chevron_right, color: AppColors.gray400),

@@ -20,9 +20,16 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
   }
 
   void _handleSubmit() {
-    // Show success dialog or snackbar
+    // No password-reset endpoint exists on the backend yet — be honest
+    // about that instead of faking a success state (same "not available
+    // yet" treatment as booking/chatbot). Revisit once the backend adds a
+    // reset-password flow.
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('تم إرسال الرابط إلى بريدك الإلكتروني')),
+      const SnackBar(
+        content: Text(
+          'إعادة تعيين كلمة المرور غير متاحة حالياً، يرجى التواصل مع الدعم',
+        ),
+      ),
     );
   }
 

@@ -3,18 +3,18 @@ import 'package:tips_n_steps/core/helpers/extension.dart';
 import 'package:tips_n_steps/core/theme/app_colors.dart';
 import 'package:tips_n_steps/feature/health_units/data/model/health_unit_model.dart';
 
+/// Simplified: `area`/`hours`/`days`/`phone` had no backend equivalent (see
+/// health_unit_model.dart), so the call button and those info rows were
+/// dropped — the card now only shows what the content item can actually
+/// provide (name + description preview) plus a details affordance.
 class HealthUnitCard extends StatelessWidget {
   final HealthUnitModel unit;
   final VoidCallback onTap;
-  final VoidCallback onDetailTap;
-  final VoidCallback onCallTap;
 
   const HealthUnitCard({
     super.key,
     required this.unit,
     required this.onTap,
-    required this.onDetailTap,
-    required this.onCallTap,
   });
 
   @override
@@ -58,68 +58,55 @@ class HealthUnitCard extends StatelessWidget {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18.SP),
                       ),
-                      Text(
-                        unit.area,
-                        style: TextStyle(
-                            color: AppColors.gray500, fontSize: 12.SP),
-                      ),
+                      if (unit.description.isNotEmpty) ...[
+                        4.vS,
+                        Text(
+                          unit.description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: AppColors.gray500, fontSize: 12.SP),
+                        ),
+                      ],
                     ],
                   ),
                 ),
               ],
             ),
-            16.vS,
-            _buildIconInfo(Icons.access_time, unit.hours),
-            _buildIconInfo(Icons.calendar_today, unit.days),
-            16.vS,
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton.icon(
-                    onPressed: onCallTap,
-                    icon: Icon(Icons.phone, size: 16.W),
-                    label: const Text('اتصل'),
-                    style: TextButton.styleFrom(
-                      backgroundColor: AppColors.primaryBlue,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.R),
-                      ),
-                    ),
+            if (unit.services.isNotEmpty) ...[
+              12.vS,
+              Wrap(
+                spacing: 6.W,
+                runSpacing: 6.H,
+                children: unit.services
+                    .take(4)
+                    .map((s) => Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.W, vertical: 4.H),
+                          decoration: BoxDecoration(
+                            color: Colors.cyan.shade50,
+                            borderRadius: BorderRadius.circular(8.R),
+                          ),
+                          child: Text(s, style: TextStyle(fontSize: 10.SP)),
+                        ))
+                    .toList(),
+              ),
+            ],
+            12.vS,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton(
+                onPressed: onTap,
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.R),
                   ),
                 ),
-                12.hS,
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: onDetailTap,
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.R),
-                      ),
-                    ),
-                    child: const Text('التفاصيل'),
-                  ),
-                ),
-              ],
+                child: const Text('التفاصيل'),
+              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildIconInfo(IconData icon, String text) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 4.H),
-      child: Row(
-        children: [
-          Icon(icon, size: 14.W, color: AppColors.primaryBlue),
-          8.hS,
-          Text(
-            text,
-            style: TextStyle(color: AppColors.gray600, fontSize: 12.SP),
-          ),
-        ],
       ),
     );
   }
