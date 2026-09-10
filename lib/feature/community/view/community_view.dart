@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tips_n_steps/core/di/service_locator.dart';
 import 'package:tips_n_steps/core/helpers/extension.dart';
 import 'package:tips_n_steps/core/routing/app_routes.dart';
+import 'package:tips_n_steps/core/widgets/app_layout.dart';
 import 'package:tips_n_steps/core/widgets/empty_state.dart';
 import 'package:tips_n_steps/feature/community/logic/qa_cubit.dart';
 import 'package:tips_n_steps/feature/community/view/components/ask_question_button.dart';

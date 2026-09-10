@@ -23,7 +23,7 @@ class NotificationListItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.W, vertical: 14.H),
         decoration: BoxDecoration(
           color: unread ? AppColors.primaryBlue.withValues(alpha: 0.05) : null,
-          border: Border(
+          border: const Border(
             bottom: BorderSide(color: AppColors.gray200, width: 1),
           ),
         ),

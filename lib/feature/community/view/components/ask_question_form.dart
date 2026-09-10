@@ -68,7 +68,7 @@ class _AskQuestionFormState extends State<AskQuestionForm> {
             fillColor: AppColors.gray50,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16.R),
-              borderSide: BorderSide(color: AppColors.gray200),
+              borderSide: const BorderSide(color: AppColors.gray200),
             ),
             contentPadding: EdgeInsets.symmetric(horizontal: 16.W, vertical: 4.H),
           ),
