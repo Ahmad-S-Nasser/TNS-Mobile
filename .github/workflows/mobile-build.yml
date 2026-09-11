@@ -1,0 +1,86 @@
+name: Build Mobile Artifacts
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: mobile-build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: "3.47.3"
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - run: flutter analyze
+
+      # No release keystore is configured yet (android/app/build.gradle.kts
+      # signs release builds with the debug key, same as `flutter run
+      # --release`), so this produces an installable-for-testing APK, not
+      # one suitable for Play Store upload. Add a real signingConfig +
+      # secrets (see README note below) once you have a release keystore.
+      - run: flutter build apk --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+
+  build-ios:
+    name: Build iOS (unsigned)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - run: flutter analyze
+
+      # No Apple Developer signing assets are configured, so this builds
+      # unsigned — enough to catch iOS/Swift/CocoaPods build breakage, but
+      # the result is NOT an installable .ipa (real devices require a
+      # signed build). To produce a real .ipa in CI:
+      #   1. Add an Apple Developer account's distribution certificate
+      #      (.p12) and provisioning profile as base64-encoded repo secrets.
+      #   2. Import them into a temporary keychain in a step before build.
+      #   3. Run `flutter build ipa --export-options-plist=...` instead of
+      #      `flutter build ios --no-codesign` below.
+      # (fastlane match, or Codemagic/Bitrise's built-in signing UI, are
+      # both easier ways to manage this than hand-rolling the keychain
+      # import steps.)
+      - run: flutter build ios --release --no-codesign
+
+      - name: Zip unsigned .app for inspection
+        run: |
+          cd build/ios/iphoneos
+          zip -r Runner.app.zip Runner.app
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-unsigned-app
+          path: build/ios/iphoneos/Runner.app.zip
+          if-no-files-found: error
